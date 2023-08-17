@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:space/screens/login.dart';
-import 'package:space/screens/signin.dart';
+import 'package:space/feature_feed/presentation/screens/home.dart';
+import 'package:space/screens/checkout.dart';
+import 'package:space/feature_auth/presentation/screens/login.dart';
+import 'package:space/feature_auth/presentation/screens/signin.dart';
+
+import 'common/constants.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -18,7 +22,8 @@ void main() {
     routes: {
       '/': (context) => const MyApp(),
       '/signin': (context) => const Signin(),
-      '/login': (context) => const Login(),
+      '/login': (context) => Login(),
+      '/home': (context) => const HomePage(),
     },
   ));
 }
@@ -33,27 +38,45 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomCenter,
-                colors: [
-              Color.fromARGB(255, 26, 71, 100),
-              Color.fromARGB(255, 2, 165, 168),
-              Color.fromARGB(255, 2, 165, 168),
-              Color.fromARGB(255, 26, 71, 100),
-            ])),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/signin');
-          },
-          child: Center(
-            child: Image.asset(
-              'assets/astronaut.png',
-              fit: BoxFit.contain,
+    return Scaffold(
+      body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomCenter,
+                  colors: [darkGreen, lightGreen, lightGreen, darkGreen])),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/signin');
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 8,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/astronaut.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text('Space',
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ],
+                  ),
+                )
+              ],
             ),
-          ),
-        ));
+          )),
+    );
   }
 }

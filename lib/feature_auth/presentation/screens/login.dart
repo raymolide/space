@@ -1,13 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:space/common/constants.dart';
+import 'package:space/feature_auth/application/usecases/auth_usecase.dart';
+
+import '../../domain/models/user.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  final AuthUseCase? authUseCase;
+  const Login({super.key, this.authUseCase});
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  void _login(BuildContext context) {
+    final String username = _usernameController.text;
+    final String password = _passwordController.text;
+
+    final User? user =
+        widget.authUseCase?.authenticateUser(username, password) as User?;
+
+    Navigator.pushReplacementNamed(context, '/home');
+    if (user != null) {
+      if (username == password) {
+        const snackBar = SnackBar(
+          backgroundColor: Colors.green,
+          content: const Text('LoggedIn'),
+          duration: const Duration(seconds: 3),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } else {
+      const snackBar = SnackBar(
+        backgroundColor: Colors.red,
+        content: Text('Credenciais invalidas'),
+        duration: Duration(seconds: 1),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +119,7 @@ class _LoginState extends State<Login> {
                       ),
                     ]),
                     TextField(
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         labelText: "Seu Email",
                         fillColor: Colors.white,
@@ -102,6 +139,7 @@ class _LoginState extends State<Login> {
                     ),
                     const SizedBox(height: 15),
                     TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         suffixIcon: const Icon(Icons.remove_red_eye),
@@ -144,9 +182,7 @@ class _LoginState extends State<Login> {
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 Colors.teal.shade500)),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/');
-                        },
+                        onPressed: () => _login(context),
                         child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [Text('Continuar')])),
